@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using SMS.Application.DTOs;
 using SMS.Application.Services;
 using SMS.Core.Entities;
+using SMS.Core.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,11 +20,13 @@ namespace SMS.Controllers
 		private readonly UserServices _userServices;
 		private readonly CrudServices<User> _crudServices;
 		private readonly ActivityLoggerServices _activityLogger;
-		public AuthController(UserServices userServices, CrudServices<User> crudServices,ActivityLoggerServices activityLoggerServices)
+		private readonly EmailServices _emailServices;
+		public AuthController(UserServices userServices, CrudServices<User> crudServices,ActivityLoggerServices activityLoggerServices, EmailServices emailServices)
 		{
 			_userServices = userServices;
 			_crudServices = crudServices;
 			_activityLogger = activityLoggerServices;
+			_emailServices = emailServices;
 		}
 		[HttpGet("GetAllUser")]
 		public async Task<IActionResult> GetAll()
@@ -75,8 +78,13 @@ namespace SMS.Controllers
 				var success = await _userServices.RegisterUserAsync(signupDTO.Username,signupDTO.Firstname,signupDTO.Lastname,signupDTO.Middlename,signupDTO.Password,signupDTO.Email,signupDTO.Address,signupDTO.Gender,signupDTO.ContactNumber);
 
 				if (success)
-					return Ok("User registered successfully!");
+				{
+					//var subject = "Welcome to Our Service!";
+					//var body = $"<h1>Hi {signupDTO.Firstname},</h1><p>Thank you for signing up!</p>";
+					//await _emailServices.SendEmailAsync(signupDTO.Email, subject, body);
 
+					return Ok("User registered successfully!");
+				}
 				return BadRequest("User is already taken.");
 			}
 			catch (Exception ex)

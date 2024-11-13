@@ -11,6 +11,7 @@ namespace SMS.Infrastructure.Data
 		}
 		public DbSet<User> user { get; set; }
 		public DbSet<UserActivityLog> UserActivityLogs { get; set; }
+		public DbSet<Roles> roles { get; set; }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
@@ -39,6 +40,10 @@ namespace SMS.Infrastructure.Data
 					 .WithMany() 
 					 .HasForeignKey("UserId") 
 					 .OnDelete(DeleteBehavior.Cascade); 
+			});
+			modelBuilder.Entity<Roles>(entity => { 
+				entity.HasKey(e => e.Id);
+				entity.Property(e => e.Name).IsRequired();
 			});
 		}
 	}

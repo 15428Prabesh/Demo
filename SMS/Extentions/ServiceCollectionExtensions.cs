@@ -14,7 +14,9 @@ namespace SMS.Extentions
 			services.AddScoped<IUserRepository, UserRepository>();
 			services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 			services.AddScoped<IActivityLogRepository, ActivityLogRepository>();
+
 			services.AddScoped<UserServices>();
+			services.AddScoped<RoleServices>();
 			services.AddScoped(typeof(CrudServices<>));
 			services.AddScoped<ActivityLoggerServices>();
 
@@ -22,6 +24,13 @@ namespace SMS.Extentions
 				configuration["JwtSettings:Key"],
 				configuration["JwtSettings:Issuer"],
 				configuration["JwtSettings:Audience"]));
+
+			services.AddSingleton<IEmailService>(provider => new EmailServices(
+				configuration["EmailSettings:SmtpServer"],
+				int.Parse(configuration["EmailSettings:Port"]),
+				configuration["EmailSettings:Username"],
+				configuration["EmailSettings:Password"]
+			));
 
 			return services;
 		}
